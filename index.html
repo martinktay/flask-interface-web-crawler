@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% if results_query %}
+    {% for result in results_query %}
+      <div class="result">
+        <h2 class="title"><a href="{{ result.title_url }}" class="text-white">{{ result.title }}</a></h2>
+        {% set authors_list = result.authors.split(',') %}
+        {% set url_authors_list = result.url_authors.split(',') %}
+        {% set keywords = result.keywords.split(',') %}
+        {% for i in range(authors_list|length) %}
+          {% set author = authors_list[i].strip() %}
+          {% set url = url_authors_list[i].strip() if url_authors_list[i] != 'None' else None %}
+          {% if url == 'None' %}
+            <span class="author_no_link">{{ author }}</span>{% if not loop.last %}, {% endif %}
+          {% else %}
+            <a class ="authors" href="{{ url|replace("'", '')|replace('[', '')|replace(']', '') }}" class="text-white" style="text-decoration: none">{{ author }}</a>{% if not loop.last %}, {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% if result.keywords != '[]' %}
+          </br>
+          Keywords:
+          {% for i in range(keywords|length) %}
+            {% set keyword = keywords[i].strip() %}
+            <span class="keywords">{{ keyword|replace("'", '')|replace('[', '')|replace(']', '') }}</span>{% if not loop.last %}, {% endif %}
+          {% endfor %}
+        {% endif %}
+        <p class="abstract">Abstract: {{ result.abstract }}</p>
+        <p class="date"> Date : {{ result.date }}</p>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endblock %}
